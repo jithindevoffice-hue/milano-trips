@@ -24,7 +24,9 @@ function Logo({ footer = false }) {
 function Header({ onQuote }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  useEffect(() => setOpen(false), [location.pathname]);
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
   const links = [
     ['/', 'Home'], ['/destinations', 'Destinations'], ['/services', 'Services'],
     ['/gallery', 'Gallery'], ['/about', 'About'], ['/testimonials', 'Stories'], ['/contact', 'Contact'],
@@ -157,7 +159,9 @@ function About({ onQuote }) {
 function ContactForm({ initial = '', isModal = false, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', interest: initial, dates: '', message: '' });
   const [status, setStatus] = useState('');
-  useEffect(() => setForm(prev => ({ ...prev, interest: initial })), [initial]);
+  useEffect(() => {
+    setForm(prev => ({ ...prev, interest: initial }));
+  }, [initial]);
   function submit(e) {
     e.preventDefault();
     const subject = `Travel enquiry${form.interest ? `: ${form.interest}` : ''} - Milano Trips LLP`;
@@ -181,7 +185,13 @@ function QuoteModal({ initial, onClose }) {
   return <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}><section className="quote-modal" role="dialog" aria-modal="true" aria-labelledby="quote-title"><button className="modal-close" onClick={onClose} aria-label="Close enquiry form"><X size={22} /></button><p className="eyebrow">PLAN YOUR NEXT ADVENTURE</p><h2 id="quote-title">Where to next?</h2><p>Share a few details. We'll help you explore a tailored itinerary or service.</p><ContactForm isModal initial={initial} onClose={onClose} /><div className="modal-whatsapp"><span>Want to talk instead?</span><a target="_blank" rel="noreferrer" href={whatsappUrl(initial ? `Hello Milano Trips LLP! I'd like to enquire about ${initial}.` : undefined)}><MessageCircle size={17} /> Chat on WhatsApp</a></div></section></div>;
 }
 
-function ScrollToTop() { const { pathname } = useLocation(); useEffect(() => window.scrollTo({ top: 0, behavior: 'instant' }), [pathname]); return null; }
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
 function NotFound() { return <main className="container not-found"><Compass size={43} /><h1>Looks like you've taken a different route.</h1><p>This page isn't available. Your next adventure is just a click away.</p><Link to="/" className="btn btn-orange">Back to home <ArrowRight size={17} /></Link></main>; }
 
 export default function App() {
