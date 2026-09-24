@@ -1,40 +1,54 @@
-name: Build and deploy to Cloudflare Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: milano-pages-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  PROJECT_NAME: milano-trips
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    name: Build and Deploy to Cloudflare Pages
+    permissions:
+      contents: read
+      deployments: write
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Node
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
+          cache: npm
+
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
-      - name: Verify project
-        run: npm run check
-      - name: Build website
+        run: npm ci
+
+      - name: Build project
         run: npm run build
-      - name: Deploy production site to Cloudflare Pages
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          NODE_ENV: production
+
+      - name: Create Cloudflare Pages project if it does not exist
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'milano-trips' }} --branch=main
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages project create ${{ env.PROJECT_NAME }} --production-branch=main
+        continue-on-error: true
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ env.PROJECT_NAME }} --branch=${{ github.ref_name }}
+
+      - name: Print deployment details
+        run: echo "Deployed ${{ env.PROJECT_NAME }} to Cloudflare Pages."
