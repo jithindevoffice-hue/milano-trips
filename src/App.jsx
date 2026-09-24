@@ -3,11 +3,11 @@ import { Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-ro
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Camera,
   CarFront, Check, ChevronDown, ChevronLeft, ChevronRight, Clock3,
-  Compass, Globe2, Heart, Hotel, Instagram, Mail, MapPin, Menu,
+  Compass, Globe2, Heart, Hotel, Instagram, Mail, Map, MapPin, Menu,
   MessageCircle, Mountain, Phone, Plane, PlayCircle, Search, Send,
   ShieldCheck, Sparkles, Star, UsersRound, Wallet, X,
 } from 'lucide-react';
-import { BUSINESS, CATEGORIES, DESTINATIONS, GALLERY, SERVICES } from './data.js';
+import { BUSINESS, CATEGORIES, DESTINATIONS, GALLERY, SCOPES, SERVICES } from './data.js';
 
 const iconMap = { globe: Globe2, users: UsersRound, car: CarFront, camera: Camera, hotel: Hotel, plane: Plane };
 const image = (name) => `/images/${name}.webp`;
@@ -62,8 +62,20 @@ function SectionHead({ eyebrow, title, text, action, to }) {
 
 function DestinationCard({ destination, onQuote, compact = false }) {
   return <article className={`destination-card ${compact ? 'compact' : ''}`}>
-    <div className="destination-photo"><img loading="lazy" src={destination.image} alt={destination.name} /><span className="image-pill">{destination.label}</span></div>
-    <div className="destination-details"><p className="card-kicker">{destination.category}</p><h3>{destination.name}</h3><p>{destination.description}</p><div className="destination-meta"><span><CalendarDays size={14} /> {destination.days}</span></div><div className="destination-card-bottom"><span>Made for <strong>you</strong></span><button className="circle-arrow" onClick={() => onQuote(destination.name)} aria-label={`Enquire about ${destination.name}`}><ArrowUpRight size={18} /></button></div></div>
+    <div className="destination-photo">
+      <img loading="lazy" src={destination.image} alt={destination.name} />
+      <span className="image-pill">{destination.label}</span>
+      <span className={`destination-scope-badge ${destination.scope}`}>
+        {destination.scope === 'domestic' ? 'India' : 'International'}
+      </span>
+    </div>
+    <div className="destination-details">
+      <p className="card-kicker">{destination.category}</p>
+      <h3>{destination.name}</h3>
+      <p>{destination.description}</p>
+      <div className="destination-meta"><span><CalendarDays size={14} /> {destination.days}</span></div>
+      <div className="destination-card-bottom"><span>Tailored for <strong>you</strong></span><button className="circle-arrow" onClick={() => onQuote(destination.name)} aria-label={`Enquire about ${destination.name}`}><ArrowUpRight size={18} /></button></div>
+    </div>
   </article>;
 }
 
@@ -81,7 +93,7 @@ function Home({ onQuote }) {
   return <>
     <section className="home-hero"><div className="container hero-inner"><div className="hero-copy"><p className="eyebrow"><span className="tiny-rule" /> TRAVEL · EXPLORE · EXPERIENCE</p><h1>Discover<br />the World<br /><em>with Us</em></h1><p className="hero-tagline">Enjoy the Amazing Adventure Vacations</p><p className="hero-description">We specialise in creating unforgettable travel experiences to captivating destinations across the globe.</p><div className="hero-buttons"><button className="btn btn-orange" onClick={() => navigate('/destinations')}>Explore destinations <ArrowUpRight size={17} /></button><button className="btn btn-outline" onClick={() => onQuote()}>Get a quote <ArrowRight size={17} /></button></div></div><div className="hero-visual"><div className="hero-photo"></div><span className="hero-flight"><Plane size={27} fill="currentColor" /></span></div></div></section>
     <div className="container features-strip"><div><Compass /><strong>Handpicked</strong><span>Travel ideas</span></div><div><Heart /><strong>Thoughtful</strong><span>Planning</span></div><div><MessageCircle /><strong>Helpful</strong><span>Guidance</span></div><div><ShieldCheck /><strong>Comfortable</strong><span>Journeys</span></div></div>
-    <section className="section container home-destinations"><SectionHead eyebrow="EXPLORE THE WORLD" title="Popular destinations" text="A little inspiration for your next getaway." action="View all destinations" to="/destinations" /><div className="home-destination-grid"><Link to="/destinations?category=Exotic%20Escapes" className="category-tile"><img src={image('gallery-06')} alt="Blue seas and a tropical island" /><span>01 / EXOTIC ESCAPES</span><h3>Exotic Escapes</h3><p>Southeast Asian beauty &amp; tropical inspiration</p><b><ArrowUpRight size={20} /></b></Link><Link to="/destinations?category=European%20Extravaganza" className="category-tile"><img src={image('london')} alt="Tower Bridge in London" /><span>02 / EUROPE</span><h3>European<br />Extravaganza</h3><p>Rich culture, timeless architecture</p><b><ArrowUpRight size={20} /></b></Link><Link to="/destinations?category=African%20Adventures" className="category-tile"><img src={image('elephants')} alt="Elephants on the African plains" /><span>03 / AFRICA</span><h3>African Adventures</h3><p>Nature, wildlife &amp; breathtaking landscapes</p><b><ArrowUpRight size={20} /></b></Link></div></section>
+    <section className="section container home-destinations"><SectionHead eyebrow="EXPLORE THE WORLD" title="Popular destinations" text="A little inspiration for your next getaway." action="View all destinations" to="/destinations" /><div className="home-destination-grid"><Link to="/destinations?category=Exotic%20Escapes" className="category-tile"><img src={image('gallery-06')} alt="Blue seas and a tropical island" /><span>01 / EXOTIC ESCAPES</span><h3>Exotic Escapes</h3><p>Southeast Asian beauty &amp; tropical inspiration</p><b><ArrowUpRight size={20} /></b></Link><Link to="/destinations?category=European%20Extravaganza" className="category-tile"><img src={image('london')} alt="Tower Bridge in London" /><span>02 / EUROPE</span><h3>European<br />Extravaganza</h3><p>Rich culture, timeless architecture</p><b><ArrowUpRight size={20} /></b></Link><Link to="/destinations?scope=domestic" className="category-tile"><img src={image('rajasthan')} alt="Royal palaces of Rajasthan" /><span>03 / INCREDIBLE INDIA</span><h3>Incredible India</h3><p>Royal palaces, backwaters &amp; Himalayan heights</p><b><ArrowUpRight size={20} /></b></Link><Link to="/destinations?category=African%20Adventures" className="category-tile"><img src={image('elephants')} alt="Elephants on the African plains" /><span>04 / AFRICA</span><h3>African Adventures</h3><p>Nature, wildlife &amp; breathtaking landscapes</p><b><ArrowUpRight size={20} /></b></Link></div></section>
     <section className="home-banner"><div className="container home-banner-inner"><div><p className="eyebrow">YOUR NEXT STORY STARTS HERE</p><h2>Travel more.<br />Create bigger memories.</h2><p>Tell us your dream destination. We'll help put together your next experience.</p><button className="btn btn-orange" onClick={() => onQuote()}>Plan your trip <ArrowUpRight size={17} /></button></div><img loading="lazy" src={image('gallery-09')} alt="A scenic coastal arch" /></div></section>
     <section className="section container"><SectionHead eyebrow="WHAT WE DO" title="Travel, handled with care" text="From accommodation to on-ground travel, Milano Trips helps you connect the pieces." action="All services" to="/services" /><div className="home-services-grid">{SERVICES.slice(0, 3).map(s => <ServiceCard key={s.id} service={s} onQuote={onQuote} withImage />)}</div></section>
   </>;
@@ -90,16 +102,116 @@ function Home({ onQuote }) {
 function Destinations({ onQuote }) {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  const [scope, setScope] = useState(params.get('scope') || 'all');
   const [category, setCategory] = useState(params.get('category') || 'All');
   const [search, setSearch] = useState(params.get('search') || '');
-  useEffect(() => { setCategory(params.get('category') || 'All'); setSearch(params.get('search') || ''); }, [location.search]);
-  const filtered = useMemo(() => DESTINATIONS.filter(d => (category === 'All' || category === d.category) && (`${d.name} ${d.category} ${d.description} ${d.label}`.toLowerCase().includes(search.toLowerCase()))), [category, search]);
+
+  useEffect(() => {
+    setScope(params.get('scope') || 'all');
+    setCategory(params.get('category') || 'All');
+    setSearch(params.get('search') || '');
+  }, [location.search]);
+
+  const counts = useMemo(() => ({
+    all: DESTINATIONS.length,
+    international: DESTINATIONS.filter(d => d.scope === 'international').length,
+    domestic: DESTINATIONS.filter(d => d.scope === 'domestic').length,
+  }), []);
+
+  const filtered = useMemo(() => {
+    return DESTINATIONS.filter(d => {
+      const matchScope = scope === 'all' || d.scope === scope;
+      const matchCategory = category === 'All' || d.category === category;
+      const query = `${d.name} ${d.category} ${d.description} ${d.label}`.toLowerCase();
+      const matchSearch = !search || query.includes(search.toLowerCase());
+      return matchScope && matchCategory && matchSearch;
+    });
+  }, [scope, category, search]);
+
+  const availableCategories = useMemo(() => {
+    if (scope === 'all') return CATEGORIES;
+    const active = DESTINATIONS.filter(d => d.scope === scope);
+    const catSet = new Set(active.map(d => d.category));
+    return ['All', ...catSet];
+  }, [scope]);
+
   return <>
-    <section className="page-hero destination-page-hero"><div className="container"><p className="eyebrow">HANDPICKED IDEAS</p><h1>Travel Packages<br />for Every Explorer</h1><p>From beautiful escapes to culture-rich journeys and adventure, discover travel inspiration with Milano Trips LLP.</p></div></section>
-    <main className="container page-content"><div className="floating-filter"><label><Search size={18} /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search destinations" aria-label="Search destinations" /></label><label><Compass size={18} /><select value={category} onChange={e => setCategory(e.target.value)} aria-label="Filter by travel style">{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></label><button className="btn btn-orange" onClick={() => onQuote(search)}>Custom itinerary <ArrowUpRight size={16} /></button></div>
-      <SectionHead eyebrow="EXPLORE YOUR POSSIBILITIES" title="Our signature travel ideas" text="Browse inspiration below. Each itinerary is planned around your dates, group and preferences." />
-      <div className="chip-row" role="group" aria-label="Destination filters">{CATEGORIES.map(c => <button key={c} className={`chip ${c === category ? 'active' : ''}`} aria-pressed={c === category} onClick={() => setCategory(c)}>{c}</button>)}</div>
-      {filtered.length ? <div className="destination-grid">{filtered.map(d => <DestinationCard key={d.id} destination={d} onQuote={onQuote} />)}</div> : <div className="empty-state"><Search size={28} /><h3>No exact matches found</h3><p>We can still plan a personalised journey to your chosen place.</p><button className="btn btn-orange" onClick={() => onQuote(search)}>Ask for a custom trip</button></div>}
+    <section className="page-hero destination-page-hero"><div className="container"><p className="eyebrow">HANDPICKED IDEAS</p><h1>Travel Packages<br />for Every Explorer</h1><p>From global wonders across Europe, Asia &amp; the Americas to domestic getaways across India, discover curated travel inspiration with Milano Trips LLP.</p></div></section>
+    <main className="container page-content">
+      <div className="floating-filter">
+        <label><Search size={18} /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search destinations (e.g. Dubai, Kerala, Japan, Goa...)" aria-label="Search destinations" /></label>
+        <label><Compass size={18} />
+          <select value={category} onChange={e => setCategory(e.target.value)} aria-label="Filter by travel style">
+            {availableCategories.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </label>
+        <button className="btn btn-orange" onClick={() => onQuote(search)}>Custom itinerary <ArrowUpRight size={16} /></button>
+      </div>
+
+      <div className="destinations-toolbar">
+        <SectionHead eyebrow="EXPLORE YOUR POSSIBILITIES" title="Curated travel collections" text="Browse inspiration below. Switch between International and Domestic (India) travel." />
+        <div className="destination-scope-tabs" role="tablist" aria-label="Destination Types">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={scope === 'all'}
+            className={`scope-tab ${scope === 'all' ? 'active' : ''}`}
+            onClick={() => { setScope('all'); setCategory('All'); }}
+          >
+            <Globe2 size={16} />
+            <span>All</span>
+            <span className="scope-count">{counts.all}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={scope === 'international'}
+            className={`scope-tab ${scope === 'international' ? 'active' : ''}`}
+            onClick={() => { setScope('international'); setCategory('All'); }}
+          >
+            <Plane size={16} />
+            <span>International</span>
+            <span className="scope-count">{counts.international}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={scope === 'domestic'}
+            className={`scope-tab ${scope === 'domestic' ? 'active' : ''}`}
+            onClick={() => { setScope('domestic'); setCategory('All'); }}
+          >
+            <Map size={16} />
+            <span>Domestic (India)</span>
+            <span className="scope-count">{counts.domestic}</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="chip-row" role="group" aria-label="Destination category filters">
+        {availableCategories.map(c => (
+          <button
+            key={c}
+            className={`chip ${c === category ? 'active' : ''}`}
+            aria-pressed={c === category}
+            onClick={() => setCategory(c)}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length ? (
+        <div className="destination-grid">
+          {filtered.map(d => <DestinationCard key={d.id} destination={d} onQuote={onQuote} />)}
+        </div>
+      ) : (
+        <div className="empty-state">
+          <Search size={28} />
+          <h3>No exact matches found</h3>
+          <p>We can still plan a personalised journey to your chosen place.</p>
+          <button className="btn btn-orange" onClick={() => onQuote(search)}>Ask for a custom trip</button>
+        </div>
+      )}
       <div className="note-box"><Sparkles size={19} /><p>Destinations shown are travel inspiration, not fixed departures or confirmed packages. Contact Milano Trips for current availability, a personalised itinerary and a quotation.</p></div>
     </main>
   </>;
