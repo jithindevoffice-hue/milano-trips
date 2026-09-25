@@ -5,7 +5,7 @@ export const BUSINESS = {
   phone: '+91 9746073527',
   phoneDigits: '919746073527',
   email: 'info@milanotrips.com',
-  website: 'https://www.milanotrips.com',
+  website: 'https://milanotrips.com',
   tagline: 'Discover the World with Us',
 };
 
